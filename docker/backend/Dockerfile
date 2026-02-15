@@ -21,12 +21,12 @@ COPY backend/requirements/development.txt /app/requirements/development.txt
 RUN pip install --upgrade pip
 RUN pip install -r requirements/development.txt
 
-# Copy entrypoint script first
-COPY docker/backend/entrypoint.sh /app/entrypoint.sh
-RUN chmod +x /app/entrypoint.sh
-
-# Copy project
+# Copy project first
 COPY backend /app
 
+# Copy entrypoint script after (so it doesn't get overwritten)
+COPY docker/backend/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
 # Run entrypoint
-ENTRYPOINT ["/app/entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh"]

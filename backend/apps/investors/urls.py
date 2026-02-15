@@ -1,6 +1,10 @@
-from django.urls import path
-from . import views
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import InvestorViewSet
+
+router = DefaultRouter()
+router.register(r'', InvestorViewSet, basename='investor')
 
 urlpatterns = [
-    # To be implemented
+    path('', include(router.urls)),
 ]
