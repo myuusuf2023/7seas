@@ -16,17 +16,17 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
-COPY ./requirements/base.txt /app/requirements/base.txt
-COPY ./requirements/development.txt /app/requirements/development.txt
+COPY backend/requirements/base.txt /app/requirements/base.txt
+COPY backend/requirements/development.txt /app/requirements/development.txt
 RUN pip install --upgrade pip
 RUN pip install -r requirements/development.txt
 
-# Copy project
-COPY . /app/
-
-# Copy entrypoint script
-COPY ../docker/backend/entrypoint.sh /app/entrypoint.sh
+# Copy entrypoint script first
+COPY docker/backend/entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
+
+# Copy project
+COPY backend /app
 
 # Run entrypoint
 ENTRYPOINT ["/app/entrypoint.sh"]
