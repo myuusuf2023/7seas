@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=sevenseas_db
+      - POSTGRES_USER=sevenseas_user
+      - POSTGRES_PASSWORD=sevenseas_password
+    ports:
+      - "5432:5432"
+    networks:
+      - sevenseas_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sevenseas_user"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ../docker/backend/Dockerfile
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./backend:/app
+      - media_files:/app/media
+      - static_files:/app/staticfiles
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=True
+      - DATABASE_URL=postgresql://sevenseas_user:sevenseas_password@db:5432/sevenseas_db
+      - SECRET_KEY=dev-secret-key-change-in-production-12345
+      - ALLOWED_HOSTS=localhost,127.0.0.1,backend
+      - CORS_ALLOWED_ORIGINS=http://localhost:3000
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - sevenseas_network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ../docker/frontend/Dockerfile
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000/api
+      - CHOKIDAR_USEPOLLING=true
+    depends_on:
+      - backend
+    networks:
+      - sevenseas_network
+    stdin_open: true
+    tty: true
+
+volumes:
+  postgres_data:
+  media_files:
+  static_files:
+
+networks:
+  sevenseas_network:
+    driver: bridge
