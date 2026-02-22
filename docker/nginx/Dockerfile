@@ -2,7 +2,7 @@ FROM node:18-alpine AS frontend-build
 
 WORKDIR /app
 COPY frontend/package*.json ./
-RUN npm ci
+RUN npm install
 COPY frontend/ .
 
 ARG REACT_APP_API_URL=/api
