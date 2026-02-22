@@ -13,6 +13,9 @@ class PaymentListSerializer(serializers.ModelSerializer):
     payment_type_display = serializers.CharField(source='get_payment_type_display', read_only=True)
     payment_status_display = serializers.CharField(source='get_payment_status_display', read_only=True)
     payment_method_display = serializers.CharField(source='get_payment_method_display', read_only=True)
+    currency_display = serializers.CharField(source='get_currency_display', read_only=True)
+    amount_usd = serializers.ReadOnlyField()
+    amount_kes = serializers.ReadOnlyField()
     is_overdue = serializers.ReadOnlyField()
     days_overdue = serializers.ReadOnlyField()
     verified_by_username = serializers.CharField(source='verified_by.username', read_only=True, allow_null=True)
@@ -27,6 +30,10 @@ class PaymentListSerializer(serializers.ModelSerializer):
             'payment_type',
             'payment_type_display',
             'amount',
+            'currency',
+            'currency_display',
+            'amount_usd',
+            'amount_kes',
             'payment_status',
             'payment_status_display',
             'payment_method',
@@ -99,6 +106,7 @@ class PaymentCreateSerializer(serializers.ModelSerializer):
             'investor',
             'payment_type',
             'amount',
+            'currency',
             'payment_method',
             'payment_date',
             'due_date',

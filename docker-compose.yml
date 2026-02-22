@@ -32,6 +32,7 @@ services:
       - "8000:8000"
     environment:
       - DEBUG=True
+      - DJANGO_SETTINGS_MODULE=config.settings.development
       - DATABASE_URL=postgresql://sevenseas_user:sevenseas_password@db:5432/sevenseas_db
       - SECRET_KEY=dev-secret-key-change-in-production-12345
       - ALLOWED_HOSTS=localhost,127.0.0.1,backend

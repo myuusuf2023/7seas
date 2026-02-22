@@ -11,6 +11,7 @@ import Dashboard from './components/dashboard/Dashboard';
 import InvestorList from './components/investors/InvestorList';
 import PaymentList from './components/payments/PaymentList';
 import Reports from './components/reports/Reports';
+import UserList from './components/users/UserList';
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
                   path="/reports"
                   element={<Reports />}
                 />
+                <Route path="/users" element={<UserList />} />
               </Route>
             </Route>
 

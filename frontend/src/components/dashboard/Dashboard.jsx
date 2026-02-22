@@ -35,7 +35,7 @@ import {
 } from 'recharts';
 import StatCard from '../common/StatCard';
 import { dashboardService } from '../../services/dashboardService';
-import { formatCurrency, formatDate, formatPercent, getStatusColor } from '../../utils/formatters';
+import { formatCurrency, formatKES, formatDate, formatPercent, getStatusColor } from '../../utils/formatters';
 
 const COLORS = {
   verified: '#4caf50',
@@ -120,6 +120,7 @@ const Dashboard = () => {
           <StatCard
             title="Project Target"
             value={formatCurrency(overview?.project_target)}
+            kesValue={formatKES(overview?.project_target)}
             icon={<AccountBalanceIcon sx={{ color: 'white' }} />}
             color="primary"
           />
@@ -128,6 +129,7 @@ const Dashboard = () => {
           <StatCard
             title="Total Committed"
             value={formatCurrency(overview?.total_committed)}
+            kesValue={formatKES(overview?.total_committed)}
             icon={<PeopleIcon sx={{ color: 'white' }} />}
             trend={`${formatPercent(overview?.target_achieved_rate, 1)} of target`}
             trendUp={parseFloat(overview?.target_achieved_rate) > 0}
@@ -138,6 +140,7 @@ const Dashboard = () => {
           <StatCard
             title="Total Raised"
             value={formatCurrency(overview?.total_raised)}
+            kesValue={formatKES(overview?.total_raised)}
             icon={<MoneyIcon sx={{ color: 'white' }} />}
             trend={`${formatPercent(overview?.collection_rate, 1)} collected`}
             trendUp={parseFloat(overview?.collection_rate) > 0}
@@ -148,6 +151,7 @@ const Dashboard = () => {
           <StatCard
             title="Outstanding"
             value={formatCurrency(overview?.total_outstanding)}
+            kesValue={formatKES(overview?.total_outstanding)}
             icon={<TrendingUpIcon sx={{ color: 'white' }} />}
             color="warning"
           />
@@ -245,7 +249,10 @@ const Dashboard = () => {
                     <TableRow key={payment.id}>
                       <TableCell>{formatDate(payment.payment_date)}</TableCell>
                       <TableCell>{payment.investor_name}</TableCell>
-                      <TableCell align="right">{formatCurrency(payment.amount)}</TableCell>
+                      <TableCell align="right">
+                        <Typography variant="body2">{formatCurrency(payment.amount)}</Typography>
+                        <Typography variant="caption" sx={{ color: '#C9A961', fontWeight: 600 }}>{formatKES(payment.amount)}</Typography>
+                      </TableCell>
                       <TableCell>
                         <Chip
                           label={payment.payment_status_display}
@@ -285,7 +292,10 @@ const Dashboard = () => {
                   {overdueInvestors.slice(0, 5).map((investor) => (
                     <TableRow key={investor.investor_id}>
                       <TableCell>{investor.investor_name}</TableCell>
-                      <TableCell align="right">{formatCurrency(investor.total_overdue_amount)}</TableCell>
+                      <TableCell align="right">
+                        <Typography variant="body2">{formatCurrency(investor.total_overdue_amount)}</Typography>
+                        <Typography variant="caption" sx={{ color: '#C9A961', fontWeight: 600 }}>{formatKES(investor.total_overdue_amount)}</Typography>
+                      </TableCell>
                       <TableCell align="right">
                         <Chip label={`${investor.days_overdue} days`} color="error" size="small" />
                       </TableCell>

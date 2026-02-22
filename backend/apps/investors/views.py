@@ -41,7 +41,7 @@ class InvestorViewSet(viewsets.ModelViewSet):
     - summary: GET /api/investors/{id}/summary/ - Get financial summary
     - payments: GET /api/investors/{id}/payments/ - Get all payments for investor
     """
-    queryset = Investor.objects.all()
+    queryset = Investor.objects.exclude(investor_status='INACTIVE')
     permission_classes = [IsAuthenticated, IsAdminUser]
     filter_backends = [
         DjangoFilterBackend,

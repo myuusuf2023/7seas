@@ -5,6 +5,8 @@ from .views import (
     logout_view,
     current_user_view,
     change_password_view,
+    user_list_view,
+    user_detail_view,
 )
 
 urlpatterns = [
@@ -16,4 +18,8 @@ urlpatterns = [
     # User Profile
     path('me/', current_user_view, name='current_user'),
     path('change-password/', change_password_view, name='change_password'),
+
+    # Admin User Management
+    path('users/', user_list_view, name='user_list'),
+    path('users/<int:pk>/', user_detail_view, name='user_detail'),
 ]

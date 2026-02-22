@@ -1,12 +1,22 @@
 import numeral from 'numeral';
 import { format, parseISO } from 'date-fns';
 
+export const USD_TO_KES = 129;
+
 /**
  * Format number as currency (USD)
  */
 export const formatCurrency = (amount) => {
   if (amount === null || amount === undefined) return '$0.00';
   return numeral(amount).format('$0,0.00');
+};
+
+/**
+ * Format a USD amount converted to KES
+ */
+export const formatKES = (amountUSD) => {
+  if (amountUSD === null || amountUSD === undefined) return 'KES 0';
+  return `KES ${numeral(parseFloat(amountUSD) * USD_TO_KES).format('0,0')}`;
 };
 
 /**

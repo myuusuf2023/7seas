@@ -34,6 +34,13 @@ class Payment(models.Model):
         ('OTHER', 'Other'),
     ]
 
+    CURRENCY_CHOICES = [
+        ('USD', 'US Dollar (USD)'),
+        ('KES', 'Kenyan Shilling (KES)'),
+    ]
+
+    KES_TO_USD_RATE = Decimal('129')
+
     # Relationships
     investor = models.ForeignKey(
         Investor,
@@ -52,7 +59,13 @@ class Payment(models.Model):
         max_digits=12,
         decimal_places=2,
         validators=[MinValueValidator(Decimal('0.01'))],
-        help_text='Payment amount'
+        help_text='Payment amount in the chosen currency'
+    )
+    currency = models.CharField(
+        max_length=3,
+        choices=CURRENCY_CHOICES,
+        default='USD',
+        help_text='Currency the payment was made in'
     )
     payment_status = models.CharField(
         max_length=10,
@@ -149,6 +162,20 @@ class Payment(models.Model):
             return 0
         delta = timezone.now().date() - self.due_date
         return delta.days
+
+    @property
+    def amount_usd(self):
+        """Return the amount converted to USD (for reporting)"""
+        if self.currency == 'KES':
+            return (self.amount / self.KES_TO_USD_RATE).quantize(Decimal('0.01'))
+        return self.amount
+
+    @property
+    def amount_kes(self):
+        """Return the amount converted to KES (for display)"""
+        if self.currency == 'KES':
+            return self.amount
+        return (self.amount * self.KES_TO_USD_RATE).quantize(Decimal('0.01'))
 
     def verify_payment(self, user):
         """

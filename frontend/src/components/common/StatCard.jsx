@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent, Typography, Box } from '@mui/material';
 import { TrendingUp, TrendingDown } from '@mui/icons-material';
 
-const StatCard = ({ title, value, icon, trend, trendUp, color = 'primary' }) => {
+const StatCard = ({ title, value, kesValue, icon, trend, trendUp, color = 'primary' }) => {
   const colorMap = {
     primary: '#1B4965',
     secondary: '#C9A961',
@@ -32,9 +32,24 @@ const StatCard = ({ title, value, icon, trend, trendUp, color = 'primary' }) => 
             <Typography color="text.secondary" gutterBottom variant="body2">
               {title}
             </Typography>
-            <Typography variant="h4" component="div" sx={{ fontWeight: 600, mb: 1 }}>
+            <Typography variant="h4" component="div" sx={{ fontWeight: 600, mb: 0.5 }}>
               {value}
             </Typography>
+            {kesValue && (
+              <Typography
+                variant="caption"
+                sx={{
+                  display: 'block',
+                  color: '#C9A961',
+                  fontWeight: 600,
+                  letterSpacing: '0.3px',
+                  mb: 0.5,
+                  opacity: 0.85,
+                }}
+              >
+                {kesValue}
+              </Typography>
+            )}
             {trend && (
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                 {trendUp ? (

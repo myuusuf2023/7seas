@@ -135,14 +135,29 @@ class Investor(models.Model):
 
     @property
     def total_paid(self):
-        """Calculate total amount paid from verified payments"""
-        from apps.payments.models import Payment
+        """Calculate total amount paid (in USD) from verified payments.
+        KES payments are converted to USD using the fixed rate before summing.
+        """
+        from django.db.models import Case, When, F, ExpressionWrapper, DecimalField, Value
+        KES_RATE = Decimal('129')
         total = self.payments.filter(
             payment_status='VERIFIED'
         ).aggregate(
-            total=models.Sum('amount')
+            total=models.Sum(
+                Case(
+                    When(
+                        currency='KES',
+                        then=ExpressionWrapper(
+                            F('amount') / Value(KES_RATE),
+                            output_field=DecimalField(max_digits=14, decimal_places=4)
+                        )
+                    ),
+                    default=F('amount'),
+                    output_field=DecimalField(max_digits=14, decimal_places=4)
+                )
+            )
         )['total']
-        return total or Decimal('0.00')
+        return (total or Decimal('0.00')).quantize(Decimal('0.01'))
 
     @property
     def outstanding_balance(self):

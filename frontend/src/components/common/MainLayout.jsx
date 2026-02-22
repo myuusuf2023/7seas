@@ -26,17 +26,22 @@ import {
   BarChart as ChartIcon,
   AccountCircle,
   Logout,
+  ManageAccounts as ManageAccountsIcon,
 } from '@mui/icons-material';
 import { useAuth } from '../../contexts/AuthContext';
 
 const drawerWidth = 240;
 
-const menuItems = [
+const baseMenuItems = [
   { text: 'Dashboard', icon: <InsightsIcon />, path: '/dashboard' },
   { text: 'Investors', icon: <GroupsIcon />, path: '/investors' },
   { text: 'Payments', icon: <WalletIcon />, path: '/payments' },
   { text: 'Documents', icon: <FolderIcon />, path: '/documents' },
   { text: 'Reports', icon: <ChartIcon />, path: '/reports' },
+];
+
+const adminMenuItems = [
+  { text: 'Users', icon: <ManageAccountsIcon />, path: '/users', adminOnly: true },
 ];
 
 const MainLayout = () => {
@@ -46,18 +51,9 @@ const MainLayout = () => {
   const location = useLocation();
   const { user, logout } = useAuth();
 
-  // Get current page name based on route
-  const getPageName = () => {
-    const path = location.pathname;
-    const pageMap = {
-      '/dashboard': 'Dashboard',
-      '/investors': 'Investors',
-      '/payments': 'Payments',
-      '/documents': 'Documents',
-      '/reports': 'Reports',
-    };
-    return pageMap[path] || 'Dashboard';
-  };
+  const menuItems = user?.role === 'ADMIN'
+    ? [...baseMenuItems, ...adminMenuItems]
+    : baseMenuItems;
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -253,14 +249,56 @@ const MainLayout = () => {
         component="main"
         sx={{
           flexGrow: 1,
-          p: 3,
+          display: 'flex',
+          flexDirection: 'column',
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           backgroundColor: '#0A1929',
           minHeight: '100vh',
         }}
       >
         <Toolbar />
-        <Outlet />
+        <Box sx={{ flexGrow: 1, p: 3 }}>
+          <Outlet />
+        </Box>
+        <Box
+          component="footer"
+          sx={{
+            px: 3,
+            py: 1.5,
+            borderTop: '2px solid rgba(201, 169, 97, 0.4)',
+            background: 'linear-gradient(90deg, rgba(201,169,97,0.08) 0%, rgba(10,25,41,0) 100%)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: 1,
+          }}
+        >
+          <Typography
+            variant="caption"
+            sx={{
+              color: '#C9A961',
+              fontWeight: 600,
+              letterSpacing: '0.4px',
+            }}
+          >
+            © {new Date().getFullYear()} 7-Seas Suites
+          </Typography>
+          <Typography
+            variant="caption"
+            sx={{
+              background: 'linear-gradient(90deg, #C9A961 0%, #D4B87A 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              fontWeight: 700,
+              letterSpacing: '0.5px',
+              textTransform: 'uppercase',
+              fontSize: '0.65rem',
+            }}
+          >
+            Investment Management Platform
+          </Typography>
+        </Box>
       </Box>
     </Box>
   );
