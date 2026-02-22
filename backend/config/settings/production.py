@@ -10,6 +10,10 @@ DEBUG = False
 # Security settings for production
 # Set SECURE_SSL=True in .env.prod once SSL/HTTPS is configured
 _ssl_enabled = config('SECURE_SSL', default=False, cast=bool)
+
+# Serve Django admin/framework static files under /django-static/ in production
+# so React's /static/ assets are not blocked
+STATIC_URL = '/django-static/'
 SECURE_SSL_REDIRECT = _ssl_enabled
 SESSION_COOKIE_SECURE = _ssl_enabled
 CSRF_COOKIE_SECURE = _ssl_enabled
